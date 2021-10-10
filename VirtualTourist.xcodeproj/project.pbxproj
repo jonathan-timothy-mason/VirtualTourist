@@ -18,6 +18,7 @@
 		AB84F009270B402500F1C094 /* PhotoURLsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB84F008270B402500F1C094 /* PhotoURLsResponse.swift */; };
 		AB84F00B270B487200F1C094 /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB84F00A270B487200F1C094 /* ErrorResponse.swift */; };
 		AB84F03B270B97E700F1C094 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB84F03A270B97E700F1C094 /* DataController.swift */; };
+		AB8D408827134A4E00BFDBA4 /* ControllerHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8D408727134A4E00BFDBA4 /* ControllerHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		AB84F008270B402500F1C094 /* PhotoURLsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoURLsResponse.swift; sourceTree = "<group>"; };
 		AB84F00A270B487200F1C094 /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
 		AB84F03A270B97E700F1C094 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		AB8D408727134A4E00BFDBA4 /* ControllerHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		AB84EFFD270AEEBA00F1C094 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				AB8D408727134A4E00BFDBA4 /* ControllerHelpers.swift */,
 				AB84EFEA270AED8600F1C094 /* TravelLocationsMapViewController.swift */,
 			);
 			path = Controller;
@@ -190,6 +193,7 @@
 				AB84EFEB270AED8600F1C094 /* TravelLocationsMapViewController.swift in Sources */,
 				AB84EFE7270AED8600F1C094 /* AppDelegate.swift in Sources */,
 				AB84F002270B005600F1C094 /* TravelLocations.xcdatamodeld in Sources */,
+				AB8D408827134A4E00BFDBA4 /* ControllerHelpers.swift in Sources */,
 				AB84F03B270B97E700F1C094 /* DataController.swift in Sources */,
 				AB84EFE9270AED8600F1C094 /* SceneDelegate.swift in Sources */,
 				AB84F00B270B487200F1C094 /* ErrorResponse.swift in Sources */,
@@ -341,6 +345,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 796M3F78F6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = VirtualTourist/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -348,12 +353,13 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.udacity.VirtualTourist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udacity.VirtualTourist2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -368,6 +374,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 796M3F78F6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = VirtualTourist/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -375,12 +382,13 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.udacity.VirtualTourist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udacity.VirtualTourist2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

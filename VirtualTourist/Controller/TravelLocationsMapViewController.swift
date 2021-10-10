@@ -18,56 +18,30 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIG
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        // From answer to "iOS : Swift - How to add pinpoint to map on touch and get
+        // detailed address of that location?" by Peter Pohlmann:
+        //https://stackoverflow.com/questions/34431459/ios-swift-how-to-add-pinpoint-to-map-on-touch-and-get-detailed-address-of-th
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
-        longTapGesture.delegate = self
         mapView.addGestureRecognizer(longTapGesture)
     }
-    
-    @objc func longTap(sender: UILongPressGestureRecognizer){
-        print("long tap")
-        if sender.state == .began {
-            let locationInView = sender.location(in: mapView)
-            let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
-            //addAnnotation(location: locationOnMap)
-            
-            
-            let newTravelLocation = TravelLocation(context: DataController.shared.viewContext)
-            newTravelLocation.latitude = locationOnMap.latitude
-            newTravelLocation.longitude = locationOnMap.longitude
-            
-            do {
-                try DataController.shared.viewContext.save()
-                travelLocations.append(newTravelLocation)
-            }
-            catch {
-                
-            }
-            
-            sender.state = .ended
-        }
-    }
-
-    func addAnnotation(location: CLLocationCoordinate2D){
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = location
-            annotation.title = "Some Title"
-            annotation.subtitle = "Some Subtitle"
-            self.mapView.addAnnotation(annotation)
-    }
-    
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Load travel locations from data store and populate map.
         loadTravelLocations()
     }
     
+    /// Load travel locations from data store and populate map.
     func loadTravelLocations() {
         
         let fetchRequest = TravelLocation.fetchRequest()
-        if let data = try? DataController.shared.viewContext.fetch(fetchRequest) {
-            travelLocations = data
+        do {
+            travelLocations = try DataController.shared.viewContext.fetch(fetchRequest)
+        }
+        catch {
+            fatalError(error.localizedDescription)
         }
         
         generateAnnotations();
@@ -92,14 +66,15 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIG
         // Add array of annotations to map.
         self.mapView.addAnnotations(annotations)
         
-        // Centre on first (possibly new) location.
+        // Centre on last (possibly new) location.
         if annotations.count > 0 {
-            self.mapView.camera.centerCoordinate = annotations[0].coordinate
+            self.mapView.camera.centerCoordinate = annotations[annotations.count - 1].coordinate
         }
     }
     
     static let pinReuseId = "pin"
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // Provide pin view for each travel location as required.
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationsMapViewController.pinReuseId) as? MKPinAnnotationView
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: TravelLocationsMapViewController.pinReuseId)
@@ -112,16 +87,47 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIG
         
         return pinView
     }
-
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        // Handle press of pin to display photo album of travel location.
-        if control == view.rightCalloutAccessoryView {
-            if let annotation = view.annotation, let nameProperty = annotation.title, let mediaURLProperty = annotation.subtitle, let name = nameProperty, let mediaURL = mediaURLProperty  {
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        // Display photo album for selected travel location.
+        if let annotation = view.annotation  {
+            let lat = annotation.coordinate.latitude
+            let long = annotation.coordinate.longitude
+            ControllerHelpers.showMessage(parent: self, caption: "Test", message: "lat=\(lat), long = \(long).")
+        }
+    }
+    
+    /// Handle long press of map to add new travel location.
+    /// From answer to "iOS : Swift - How to add pinpoint to map on touch and get detailed
+    /// address of that location?" by Peter Pohlmann:
+    /// https://stackoverflow.com/questions/34431459/ios-swift-how-to-add-pinpoint-to-map-on-touch-and-get-detailed-address-of-th
+    /// - Parameter sender: Long press gesture recogniser.
+    @objc func longTap(sender: UILongPressGestureRecognizer){
+        if sender.state == .began {
+            // Get latitide and longitude of pressed point of map.
+            let locationInView = sender.location(in: mapView)
+            let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
+            
+            // Create new travel location.
+            let newTravelLocation = TravelLocation(context: DataController.shared.viewContext)
+            newTravelLocation.latitude = locationOnMap.latitude
+            newTravelLocation.longitude = locationOnMap.longitude
+            
+            do {
+                // Save to data store.
+                try DataController.shared.viewContext.save()
                 
+                // Add to array of travel locations.
+                travelLocations.append(newTravelLocation)
                 
-                
-                
+                // Display on map.
+                self.mapView.addAnnotation(MKPointAnnotation(__coordinate: locationOnMap))
             }
+            catch {
+                fatalError(error.localizedDescription)
+            }
+            
+            sender.state = .ended // Workaround to allow new long press straightaway.
         }
     }
 }
