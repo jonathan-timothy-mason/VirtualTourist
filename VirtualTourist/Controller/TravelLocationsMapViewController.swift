@@ -10,7 +10,7 @@ import MapKit
 
 /// Displays map of travel locations.
 /// Based on PinSample by Jason, Udacity.
-class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
+class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -50,25 +50,25 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIG
     /// Generate map annotations for travel locations.
     func generateAnnotations() {
         // Remove previous annotations, if any.
-        self.mapView.removeAnnotations(self.mapView.annotations)
+        mapView.removeAnnotations(self.mapView.annotations)
                
-        // Create an array of annotations for each travel location.
-        var annotations = [MKPointAnnotation]()
+        // Create annotation for each travel location.
+        var annotations = [MKTravelLocationAnnotation]()
         for travelLocation in travelLocations {
             let latitude = CLLocationDegrees(travelLocation.latitude)
             let longitude = CLLocationDegrees(travelLocation.longitude)
             let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            let annotation = MKPointAnnotation()
+            let annotation = MKTravelLocationAnnotation(travelLocation)
             annotation.coordinate = coordinates
             annotations.append(annotation)
         }
         
         // Add array of annotations to map.
-        self.mapView.addAnnotations(annotations)
+        mapView.addAnnotations(annotations)
         
         // Centre on last (possibly new) location.
         if annotations.count > 0 {
-            self.mapView.camera.centerCoordinate = annotations[annotations.count - 1].coordinate
+            mapView.camera.centerCoordinate = annotations[annotations.count - 1].coordinate
         }
     }
     
@@ -90,10 +90,11 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIG
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         // Display photo album for selected travel location.
-        if let annotation = view.annotation  {
-            let lat = annotation.coordinate.latitude
-            let long = annotation.coordinate.longitude
-            ControllerHelpers.showMessage(parent: self, caption: "Test", message: "lat=\(lat), long = \(long).")
+        if let annotation = view.annotation as? MKTravelLocationAnnotation {
+            // Show photo album of travel location.
+            let photoAlbumViewController = self.storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumViewController") as! PhotoAlbumViewController
+            photoAlbumViewController.travelLocation = annotation.TravelLocation
+            navigationController!.pushViewController(photoAlbumViewController, animated: true)
         }
     }
     
@@ -121,7 +122,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, UIG
                 travelLocations.append(newTravelLocation)
                 
                 // Display on map.
-                self.mapView.addAnnotation(MKPointAnnotation(__coordinate: locationOnMap))
+                mapView.addAnnotation(MKPointAnnotation(__coordinate: locationOnMap))
             }
             catch {
                 fatalError(error.localizedDescription)
