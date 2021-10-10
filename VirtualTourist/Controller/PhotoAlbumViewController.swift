@@ -9,11 +9,13 @@ import UIKit
 import MapKit
 
 /// Displays photos of travel location.
-class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
+class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
     var travelLocation: TravelLocation?
+    
+    var testImages: [UIImage] = [UIImage(named: "big")!, UIImage(named: "blofeld")!, UIImage(named: "drax")!]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,5 +56,27 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         }
         
         return pinView
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return testImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
+
+        // Set image.
+        cell.imageView?.image = testImages[indexPath.row]
+
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
+ 
     }
 }

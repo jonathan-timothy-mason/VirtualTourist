@@ -21,6 +21,7 @@
 		AB8D408827134A4E00BFDBA4 /* ControllerHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8D408727134A4E00BFDBA4 /* ControllerHelpers.swift */; };
 		AB8D408A271356D100BFDBA4 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8D4089271356D100BFDBA4 /* PhotoAlbumViewController.swift */; };
 		AB8D408C27137DA500BFDBA4 /* MKTravelLocationAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8D408B27137DA500BFDBA4 /* MKTravelLocationAnnotation.swift */; };
+		AB8D408E2713912A00BFDBA4 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8D408D2713912A00BFDBA4 /* PhotoCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		AB8D408727134A4E00BFDBA4 /* ControllerHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerHelpers.swift; sourceTree = "<group>"; };
 		AB8D4089271356D100BFDBA4 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 		AB8D408B27137DA500BFDBA4 /* MKTravelLocationAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKTravelLocationAnnotation.swift; sourceTree = "<group>"; };
+		AB8D408D2713912A00BFDBA4 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				AB84EFEA270AED8600F1C094 /* TravelLocationsMapViewController.swift */,
 				AB8D4089271356D100BFDBA4 /* PhotoAlbumViewController.swift */,
 				AB8D408B27137DA500BFDBA4 /* MKTravelLocationAnnotation.swift */,
+				AB8D408D2713912A00BFDBA4 /* PhotoCollectionViewCell.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 				AB8D408C27137DA500BFDBA4 /* MKTravelLocationAnnotation.swift in Sources */,
 				AB84EFEB270AED8600F1C094 /* TravelLocationsMapViewController.swift in Sources */,
 				AB8D408A271356D100BFDBA4 /* PhotoAlbumViewController.swift in Sources */,
+				AB8D408E2713912A00BFDBA4 /* PhotoCollectionViewCell.swift in Sources */,
 				AB84EFE7270AED8600F1C094 /* AppDelegate.swift in Sources */,
 				AB84F002270B005600F1C094 /* TravelLocations.xcdatamodeld in Sources */,
 				AB8D408827134A4E00BFDBA4 /* ControllerHelpers.swift in Sources */,
