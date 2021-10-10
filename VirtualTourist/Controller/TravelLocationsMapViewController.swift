@@ -122,7 +122,9 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
                 travelLocations.append(newTravelLocation)
                 
                 // Display on map.
-                mapView.addAnnotation(MKPointAnnotation(__coordinate: locationOnMap))
+                let annotation = MKTravelLocationAnnotation(newTravelLocation)
+                annotation.coordinate = locationOnMap
+                mapView.addAnnotation(annotation)
             }
             catch {
                 fatalError(error.localizedDescription)
