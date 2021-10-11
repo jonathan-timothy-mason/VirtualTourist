@@ -15,6 +15,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var travelLocation: TravelLocation!
     var photos: [Photo] = []
@@ -35,29 +36,16 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         
         generateAnnotation();
         
-        addPlacholderPhoto2()
-        addPlacholderPhoto2()
-        addPlacholderPhoto1()
-        addPlacholderPhoto2()
-        addPlacholderPhoto2()
-        addPlacholderPhoto3()
-        addPlacholderPhoto2()
-        addPlacholderPhoto1()
-        addPlacholderPhoto2()
-        addPlacholderPhoto1()
-        addPlacholderPhoto2()
-        addPlacholderPhoto2()
+        loadPhotosForTravelLocation();
         
     }
     
-    func addPlacholderPhoto1() {
-        // Create new travel location.
+    func addPlacholderPhoto() {
+        // Create placeholder photo.
         let newPhoto = Photo(context: DataController.shared.viewContext)
-        var image = UIImage(systemName: "doc.text.image")!
-        //image = image.copy(newSize: CGSize(width: 100, height: 75))!
-        //var image = UIImage(named: "big")!
-        newPhoto.photo = image.pngData()
+        newPhoto.photo = UIImage(systemName: "doc.text.image")!.pngData()
         newPhoto.travelLocation = travelLocation
+        photos.append(newPhoto)
     }
 
     func addPlacholderPhoto2() {
@@ -114,23 +102,9 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     override func viewWillAppear(_ animated: Bool) {
           
-        // Load travel locations from data store and populate map.
-        loadPhotosForTravelLocation()
     }
     
-    /// Get number of photos for travel location in data store.
-    func getNumberPhotosForTravelLocationInDataStore() -> Int {
-        let fetchRequest = Photo.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "travelLocation == %@", travelLocation)
-        do {
-            return try DataController.shared.viewContext.count(for: fetchRequest)
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    /// Load travel locations from data store and populate map.
+    /// Load photos for travel location from data store, if any, otherwise, Flickr.
     func loadPhotosForTravelLocation() {
         
         let fetchRequest = Photo.fetchRequest()
@@ -138,9 +112,36 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         do {
             
             photos = try DataController.shared.viewContext.fetch(fetchRequest)
+            if photos.count > 0 {
+                collectionView.reloadData()
+            }
+            else {
+                loadPhotosForTravelLocationFromFlickr();
+            }
         }
         catch {
             fatalError(error.localizedDescription)
+        }
+    }
+    
+    /// Load photos for travel location from Flickr and save to data store.
+    func loadPhotosForTravelLocationFromFlickr() {
+        
+        activityIndicator.startAnimating()
+        
+        FlickrClient.getPhotoURLsForLocation(latitude: travelLocation.latitude, longitude: travelLocation.longitude) { urls, error in
+            guard error == nil else {
+                ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading photo URLs from Flickr.", error: error)
+                return
+            }
+            
+            for _ in 0...urls.count {
+                self.addPlacholderPhoto()
+            }
+            
+            self.activityIndicator.stopAnimating()
+            
+            self.collectionView.reloadData()
         }
     }
     
@@ -153,6 +154,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
 
         // Set image.
+        FlickrClient.getPhoto(url: <#T##URL#>, completion: <#T##(UIImage?, Error?) -> Void#>)
         cell.imageView?.image = UIImage(data: photos[indexPath.row].photo!)
 
         return cell

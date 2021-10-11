@@ -17,18 +17,18 @@ struct PhotoURLsResponse: Codable {
 struct PhotosResponseSubObject: Codable {
     let page: Int
     let pages: Int
-    let perPage: Int
+    let perpage: Int
     let total: Int
-    let photo: [PhotoURLResonseSubObject]
+    let photo: [PhotoURLResponseSubObject]
 }
 
 /// Part of JSON response object for photo URLs of Flickr API.
-struct PhotoURLResonseSubObject: Codable {
+struct PhotoURLResponseSubObject: Codable {
     let title: String
     let url: String
     
     enum CodingKeys: String, CodingKey {
         case title
-        case url = "url_n"
+        case url = "url_t"
     }
 }

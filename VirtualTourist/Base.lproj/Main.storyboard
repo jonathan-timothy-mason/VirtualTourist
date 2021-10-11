@@ -51,16 +51,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Cfa-Ik-Fam">
-                                <rect key="frame" x="0.0" y="44" width="414" height="103.5"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="100"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="Cfa-Ik-Fam" secondAttribute="height" multiplier="4:1" id="PjC-A7-xbf"/>
+                                    <constraint firstAttribute="height" constant="100" id="4Zd-W0-p2q"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="delegate" destination="1Ci-3e-3lS" id="bhN-90-iBw"/>
                                 </connections>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ERJ-pS-phe">
-                                <rect key="frame" x="0.0" y="147.5" width="414" height="714.5"/>
+                                <rect key="frame" x="0.0" y="144" width="414" height="752"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="vOc-HF-qtG">
                                     <size key="itemSize" width="187" height="199"/>
@@ -107,6 +107,9 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="New Collection" cornerStyle="capsule"/>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="HAe-of-jYB">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="5Mw-iY-QHV"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -114,15 +117,21 @@
                             <constraint firstItem="7yR-dj-d5s" firstAttribute="centerX" secondItem="9lP-0c-bRD" secondAttribute="centerX" id="45z-uW-NQg"/>
                             <constraint firstItem="Cfa-Ik-Fam" firstAttribute="leading" secondItem="5Mw-iY-QHV" secondAttribute="leading" id="55X-Ec-amc"/>
                             <constraint firstItem="Cfa-Ik-Fam" firstAttribute="top" secondItem="5Mw-iY-QHV" secondAttribute="top" id="6av-yg-paL"/>
-                            <constraint firstItem="5Mw-iY-QHV" firstAttribute="bottom" secondItem="ERJ-pS-phe" secondAttribute="bottom" id="CIU-TU-386"/>
+                            <constraint firstItem="Cfa-Ik-Fam" firstAttribute="trailing" secondItem="5Mw-iY-QHV" secondAttribute="trailing" id="CnH-fU-bjV"/>
+                            <constraint firstItem="HAe-of-jYB" firstAttribute="centerY" secondItem="9lP-0c-bRD" secondAttribute="centerY" id="GzP-kB-YzY"/>
                             <constraint firstItem="5Mw-iY-QHV" firstAttribute="bottom" secondItem="7yR-dj-d5s" secondAttribute="bottom" constant="20" id="IRP-bW-Y1h"/>
+                            <constraint firstItem="HAe-of-jYB" firstAttribute="centerX" secondItem="9lP-0c-bRD" secondAttribute="centerX" id="Lfu-Hg-cgf"/>
                             <constraint firstItem="5Mw-iY-QHV" firstAttribute="trailing" secondItem="ERJ-pS-phe" secondAttribute="trailing" id="Llh-AO-JE4"/>
+                            <constraint firstAttribute="bottom" secondItem="ERJ-pS-phe" secondAttribute="bottom" id="MZ1-gd-Yct"/>
                             <constraint firstItem="ERJ-pS-phe" firstAttribute="leading" secondItem="5Mw-iY-QHV" secondAttribute="leading" id="Uq9-WG-W5J"/>
                             <constraint firstItem="ERJ-pS-phe" firstAttribute="top" secondItem="Cfa-Ik-Fam" secondAttribute="bottom" id="Z6a-5z-i4L"/>
                             <constraint firstItem="5Mw-iY-QHV" firstAttribute="trailing" secondItem="Cfa-Ik-Fam" secondAttribute="trailing" id="aK0-OF-hCZ"/>
+                            <constraint firstItem="Cfa-Ik-Fam" firstAttribute="top" secondItem="5Mw-iY-QHV" secondAttribute="top" id="ssd-Tl-EF7"/>
+                            <constraint firstItem="Cfa-Ik-Fam" firstAttribute="leading" secondItem="5Mw-iY-QHV" secondAttribute="leading" id="uUP-HZ-oem"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="HAe-of-jYB" id="PTn-AG-5Nu"/>
                         <outlet property="collectionView" destination="ERJ-pS-phe" id="evH-Ct-j1A"/>
                         <outlet property="flowLayout" destination="vOc-HF-qtG" id="Oul-k1-V7Q"/>
                         <outlet property="mapView" destination="Cfa-Ik-Fam" id="ckK-u2-Oew"/>

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// Provides access to Flickr API.
 class FlickrClient {
@@ -25,7 +26,8 @@ class FlickrClient {
             case .getPhotoURLsForLocation(let latitude, let longitude):
                 // extras=url_t: include URL for thumbnail-sized photo (100w x 75h). (https://www.flickr.com/services/api/flickr.photos.getSizes.html).
                 // nojsoncallback=1: exclude top-level function wrapper from JSON response (https://www.flickr.com/services/api/response.json.html).
-                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=25&format=json&nojsoncallback=1&extras=url_t"
+                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=100&format=json&nojsoncallback=1&extras=url_t"
+            
             }
         }
         
@@ -55,6 +57,26 @@ class FlickrClient {
                 completion([], error)
             }
         }
+    }
+    
+    /// Send GET request to download photo from Flickr API.
+    /// - Parameters:
+    ///   - url: URL of photo.
+    ///   - completion: Function to call upon completion.
+    class func getPhoto(url: URL, completion: @escaping (UIImage?, Error?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
+                return
+            }
+            
+            let image = UIImage(data: data)
+
+            completion(image, error)
+        }
+        task.resume()
     }
     
     /// Send GET request.
