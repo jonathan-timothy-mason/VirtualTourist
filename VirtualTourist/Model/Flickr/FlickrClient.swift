@@ -23,9 +23,9 @@ class FlickrClient {
         func constructURL() -> String {
             switch(self) {
             case .getPhotoURLsForLocation(let latitude, let longitude):
-                // extras=url_n: include URL for small-sized photo (https://www.flickr.com/services/api/flickr.photos.getSizes.html).
+                // extras=url_t: include URL for thumbnail-sized photo (100w x 75h). (https://www.flickr.com/services/api/flickr.photos.getSizes.html).
                 // nojsoncallback=1: exclude top-level function wrapper from JSON response (https://www.flickr.com/services/api/response.json.html).
-                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=25&format=json&nojsoncallback=1&extras=url_n"
+                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=25&format=json&nojsoncallback=1&extras=url_t"
             }
         }
         
