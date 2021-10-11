@@ -71,8 +71,6 @@ class FlickrClient {
                 }
                 return
             }
-
-            //usleep(100000)
             
             DispatchQueue.main.async {
                 let image = UIImage(data: data)

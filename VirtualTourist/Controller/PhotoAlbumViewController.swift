@@ -17,6 +17,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var button: UIButton!
+    @IBOutlet weak var label: UILabel!
     
     var travelLocation: TravelLocation!
     var photos: [Photo] = []
@@ -101,22 +102,32 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         // Indicate activity while photo URLs are being downloaded, before
         // number of placeholders is known.
         activityIndicator.startAnimating()
+        
+        // Prevent attempt to load new collection of photos.
         button.isEnabled = false
         
         FlickrClient.getPhotoURLsForLocation(latitude: travelLocation.latitude, longitude: travelLocation.longitude) { urls, error in
             
             // Stop indicating activity.
             self.activityIndicator.stopAnimating()
-            self.button.isEnabled = true
             
             guard error == nil else {
                 ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading photo URLs from Flickr.", error: error)
                 return
             }
             
-            // Create empty photos, to be downloaded as collection view draws its cells.
-            for url in urls {
-                self.addEmptyPhotos(url: url)
+            if urls.count <= 0 {
+                // Show message that there are no photos.
+                self.label.isHidden = false;
+            }
+            else {
+                // Allow new photo collection of photos to be loaded.
+                self.button.isEnabled = true
+                
+                // Create empty photos, to be downloaded as collection view draws its cells.
+                for url in urls {
+                    self.addEmptyPhotos(url: url)
+                }
             }
 
             self.collectionView.reloadData()
