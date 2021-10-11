@@ -16,6 +16,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var button: UIButton!
     
     var travelLocation: TravelLocation!
     var photos: [Photo] = []
@@ -27,17 +28,20 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             fatalError("Travel location not set whilst attempting to displaying photo album.")
         }
         
-        // Size cell according to screen size.
+        // From "Code for Collection View Flow Layout" of "Lesson 8: Complete
+        // the MemeMe App".
+        // Size cells according to screen size.
         let space: CGFloat = 3.0
         let dimension = (view.frame.size.width - (2 * space)) / 3.0
         flowLayout.minimumInteritemSpacing = space
         flowLayout.minimumLineSpacing = space
         flowLayout.itemSize = CGSize(width: dimension, height: dimension)
         
+        // Create annotation for travel location.
         generateAnnotation();
         
+        // Load photos for travel location from data store, if any, otherwise, Flickr.
         loadPhotosForTravelLocation();
-        
     }
         
     /// Create annotation for travel location.
@@ -71,10 +75,6 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         return pinView
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-          
-    }
-    
     /// Load photos for travel location from data store, if any, otherwise, Flickr.
     func loadPhotosForTravelLocation() {
         
@@ -101,11 +101,13 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         // Indicate activity while photo URLs are being downloaded, before
         // number of placeholders is known.
         activityIndicator.startAnimating()
+        button.isEnabled = false
         
         FlickrClient.getPhotoURLsForLocation(latitude: travelLocation.latitude, longitude: travelLocation.longitude) { urls, error in
             
             // Stop indicating activity.
             self.activityIndicator.stopAnimating()
+            self.button.isEnabled = true
             
             guard error == nil else {
                 ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading photo URLs from Flickr.", error: error)
@@ -136,6 +138,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
+        // Retrieve cell.
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
 
         let photo = photos[indexPath.row]
@@ -151,19 +154,57 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             if let urlString = photo.url, let url = URL(string: urlString) {
                 FlickrClient.getPhoto(url: url) { image, error in
                     if let image = image {
-                        photo.photo = image.pngData()
+                        // Update image in cell...
                         cell.imageView?.image = image
-                        try! DataController.shared.viewContext.save()
+                        
+                        // ...and data store.
+                        photo.photo = image.pngData()
+                        DataController.shared.save()
                     }
                 }
             }
-            
         }
 
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
- 
+        
+        let photo = photos[indexPath.row]
+        
+        // Remove from local array.
+        photos.remove(at: indexPath.row)
+        
+        // From answer to "How to delete a Cell from Collection View?" by Anbu.Karthik :
+        // https://stackoverflow.com/questions/39763968/how-to-delete-a-cell-from-collection-view
+        // Remove from collection view.
+        collectionView.deleteItems(at: [indexPath])
+        collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
+        
+        // From answer to "Reactive CollectionView on Delete" by Francisco G:
+        // https://knowledge.udacity.com/questions/437853
+        // Remove from data store.
+        DataController.shared.viewContext.delete(photo)
+        DataController.shared.save()
+    }
+    
+    /// Handle press of button to delete all photos and download more.
+    @IBAction func newCollectionPressed() {
+        // From answer to "Reactive CollectionView on Delete" by Francisco G:
+        // https://knowledge.udacity.com/questions/437853
+        // Remove from data store.
+        for photo in photos {
+            DataController.shared.viewContext.delete(photo)
+        }
+        DataController.shared.save()
+        
+        // Remove from local array.
+        photos.removeAll()
+        
+        // Make collection view reflect empty array.
+        collectionView.reloadData()
+        
+        // Load photos for travel location from Flickr.
+        loadPhotosForTravelLocationFromFlickr();
     }
 }

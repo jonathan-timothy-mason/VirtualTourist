@@ -106,6 +106,9 @@
                                 <rect key="frame" x="146.5" y="811" width="121.5" height="31"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="New Collection" cornerStyle="capsule"/>
+                                <connections>
+                                    <action selector="newCollectionPressed" destination="1Ci-3e-3lS" eventType="touchUpInside" id="jvM-1z-cEF"/>
+                                </connections>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="HAe-of-jYB">
                                 <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
@@ -132,6 +135,7 @@
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="HAe-of-jYB" id="PTn-AG-5Nu"/>
+                        <outlet property="button" destination="7yR-dj-d5s" id="ytr-hA-thU"/>
                         <outlet property="collectionView" destination="ERJ-pS-phe" id="evH-Ct-j1A"/>
                         <outlet property="flowLayout" destination="vOc-HF-qtG" id="Oul-k1-V7Q"/>
                         <outlet property="mapView" destination="Cfa-Ik-Fam" id="ckK-u2-Oew"/>

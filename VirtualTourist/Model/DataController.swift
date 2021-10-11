@@ -28,4 +28,14 @@ class DataController {
             }
         }
     }
+    
+    /// Save data store, logging any error.
+    func save() {
+        do {
+            try DataController.shared.viewContext.save()
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+    }
 }
