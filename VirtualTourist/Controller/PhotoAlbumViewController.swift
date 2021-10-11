@@ -39,36 +39,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         loadPhotosForTravelLocation();
         
     }
-    
-    func addPlacholderPhoto() {
-        // Create placeholder photo.
-        let newPhoto = Photo(context: DataController.shared.viewContext)
-        newPhoto.photo = UIImage(systemName: "doc.text.image")!.pngData()
-        newPhoto.travelLocation = travelLocation
-        photos.append(newPhoto)
-    }
-
-    func addPlacholderPhoto2() {
-        // Create new travel location.
-        let newPhoto = Photo(context: DataController.shared.viewContext)
-        var image = UIImage(named: "big")!
-        newPhoto.photo = image.pngData()
-        newPhoto.travelLocation = travelLocation
-    }
-    
-    func addPlacholderPhoto3() {
-        // Create new travel location.
-        let newPhoto = Photo(context: DataController.shared.viewContext)
-        var image = UIImage(named: "EmilioLargo")!
-        newPhoto.photo = image.pngData()
-        newPhoto.travelLocation = travelLocation
-    }
-    
-    
-
-    
-    
-    
+        
     /// Create annotation for travel location.
     func generateAnnotation() {
         let latitude = CLLocationDegrees(travelLocation.latitude)
@@ -124,25 +95,39 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         }
     }
     
-    /// Load photos for travel location from Flickr and save to data store.
+    /// Load photos for travel location from Flickr.
     func loadPhotosForTravelLocationFromFlickr() {
         
+        // Indicate activity while photo URLs are being downloaded, before
+        // number of placeholders is known.
         activityIndicator.startAnimating()
         
         FlickrClient.getPhotoURLsForLocation(latitude: travelLocation.latitude, longitude: travelLocation.longitude) { urls, error in
+            
+            // Stop indicating activity.
+            self.activityIndicator.stopAnimating()
+            
             guard error == nil else {
                 ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading photo URLs from Flickr.", error: error)
                 return
             }
             
-            for _ in 0...urls.count {
-                self.addPlacholderPhoto()
+            // Create empty photos, to be downloaded as collection view draws its cells.
+            for url in urls {
+                self.addEmptyPhotos(url: url)
             }
-            
-            self.activityIndicator.stopAnimating()
-            
+
             self.collectionView.reloadData()
         }
+    }
+    
+    /// Create placeholder photo with URL, leaving image data empty, to be loaded by collection view.
+    /// - Parameter url: URL of photo to be downloaded.
+    func addEmptyPhotos(url: String) {
+        let newPhoto = Photo(context: DataController.shared.viewContext)
+        newPhoto.url = url
+        newPhoto.travelLocation = travelLocation
+        photos.append(newPhoto)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -153,9 +138,27 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
 
-        // Set image.
-        FlickrClient.getPhoto(url: <#T##URL#>, completion: <#T##(UIImage?, Error?) -> Void#>)
-        cell.imageView?.image = UIImage(data: photos[indexPath.row].photo!)
+        let photo = photos[indexPath.row]
+        if let photo = photo.photo {
+            // Image has been downloaded, so set it.
+            cell.imageView?.image = UIImage(data: photo)
+        }
+        else {
+            // Image has not been downloaded, so set placeholder image...
+            cell.imageView?.image = UIImage(systemName: "doc.text.image")
+            
+            // ... and download actual one.
+            if let urlString = photo.url, let url = URL(string: urlString) {
+                FlickrClient.getPhoto(url: url) { image, error in
+                    if let image = image {
+                        photo.photo = image.pngData()
+                        cell.imageView?.image = image
+                        try! DataController.shared.viewContext.save()
+                    }
+                }
+            }
+            
+        }
 
         return cell
     }
@@ -164,20 +167,3 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
  
     }
 }
-
-public extension UIImage {
-    func copy(newSize: CGSize, retina: Bool = true) -> UIImage? {
-        // In next line, pass 0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-        // Pass 1 to force exact pixel size.
-        UIGraphicsBeginImageContextWithOptions(
-            /* size: */ newSize,
-            /* opaque: */ false,
-            /* scale: */ retina ? 0 : 1
-        )
-        defer { UIGraphicsEndImageContext() }
-
-        self.draw(in: CGRect(origin: .zero, size: newSize))
-        return UIGraphicsGetImageFromCurrentImageContext()
-    }
-}
-

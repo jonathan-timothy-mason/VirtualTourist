@@ -26,7 +26,7 @@ class FlickrClient {
             case .getPhotoURLsForLocation(let latitude, let longitude):
                 // extras=url_t: include URL for thumbnail-sized photo (100w x 75h). (https://www.flickr.com/services/api/flickr.photos.getSizes.html).
                 // nojsoncallback=1: exclude top-level function wrapper from JSON response (https://www.flickr.com/services/api/response.json.html).
-                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=100&format=json&nojsoncallback=1&extras=url_t"
+                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=500&format=json&nojsoncallback=1&extras=url_t"
             
             }
         }
@@ -71,10 +71,13 @@ class FlickrClient {
                 }
                 return
             }
-            
-            let image = UIImage(data: data)
 
-            completion(image, error)
+            usleep(100000)
+            
+            DispatchQueue.main.async {
+                let image = UIImage(data: data)
+                completion(image, error)
+            }
         }
         task.resume()
     }

@@ -76,7 +76,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="187" height="199"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="EmilioLargo" translatesAutoresizingMaskIntoConstraints="NO" id="7YB-Ff-4z6">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7YB-Ff-4z6">
                                                     <rect key="frame" x="0.0" y="0.0" width="187" height="199"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="75" id="HLj-Uv-lTb"/>
@@ -161,7 +161,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="EmilioLargo" width="312" height="250"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

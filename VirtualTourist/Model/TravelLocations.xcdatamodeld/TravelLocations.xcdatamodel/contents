@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Photo" representedClassName="Photo" syncable="YES" codeGenerationType="class">
         <attribute name="photo" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
         <relationship name="travelLocation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TravelLocation" inverseName="photos" inverseEntity="TravelLocation"/>
     </entity>
     <entity name="TravelLocation" representedClassName="TravelLocation" syncable="YES" codeGenerationType="class">
@@ -10,7 +11,7 @@
         <relationship name="photos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Photo" inverseName="travelLocation" inverseEntity="Photo"/>
     </entity>
     <elements>
+        <element name="Photo" positionX="-25.25" positionY="5.875" width="127.5390625" height="88"/>
         <element name="TravelLocation" positionX="-216.98828125" positionY="6.27734375" width="123.2734375" height="88"/>
-        <element name="Photo" positionX="-25.25" positionY="5.875" width="127.5390625" height="73"/>
     </elements>
 </model>
