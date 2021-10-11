@@ -12,10 +12,13 @@ import MapKit
 class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     
     var travelLocation: TravelLocation?
     
-    var testImages: [UIImage] = [UIImage(named: "big")!, UIImage(named: "blofeld")!, UIImage(named: "drax")!]
+    var testImages: [UIImage] = [UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!,UIImage(named: "big")!]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +26,14 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         if travelLocation == nil {
             fatalError("Travel location not set whilst attempting to displaying photo album.")
         }
-                     
+        
+        // Size cell according to screen size.
+        let space: CGFloat = 3.0
+        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSize(width: dimension, height: dimension)
+        
         generateAnnotation();
     }
     
