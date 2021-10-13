@@ -13,11 +13,11 @@ import MapKit
 /// https://stackoverflow.com/questions/32323080/how-to-create-a-custom-class-that-conforms-to-mkannotation-protocol
 class MKTravelLocationAnnotation: MKPointAnnotation {
     /// Travel location associated with annotation.
-    var TravelLocation: TravelLocation
+    var pin: Pin
     
     /// Initialiser.
-    /// - Parameter travelLocation: Travel location associated with annotation.
-    init(_ travelLocation: TravelLocation) {
-        TravelLocation = travelLocation
+    /// - Parameter pin: Travel location associated with annotation.
+    init(_ pin: Pin) {
+        self.pin = pin
     }
 }

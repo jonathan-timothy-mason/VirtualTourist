@@ -19,13 +19,13 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     @IBOutlet weak var button: UIButton!
     @IBOutlet weak var label: UILabel!
     
-    var travelLocation: TravelLocation!
+    var pin: Pin!
     var photos: [Photo] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if travelLocation == nil {
+        if pin == nil {
             fatalError("Travel location not set whilst attempting to displaying photo album.")
         }
         
@@ -47,8 +47,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         
     /// Create annotation for travel location.
     func generateAnnotation() {
-        let latitude = CLLocationDegrees(travelLocation.latitude)
-        let longitude = CLLocationDegrees(travelLocation.longitude)
+        let latitude = CLLocationDegrees(pin.latitude)
+        let longitude = CLLocationDegrees(pin.longitude)
         let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinates
@@ -80,7 +80,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     func loadPhotosForTravelLocation() {
         
         let fetchRequest = Photo.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "travelLocation == %@", travelLocation)
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", pin)
         do {
             
             photos = try DataController.shared.viewContext.fetch(fetchRequest)
@@ -106,7 +106,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         // Prevent attempt to load new collection of photos.
         button.isEnabled = false
         
-        FlickrClient.getPhotoURLsForLocation(latitude: travelLocation.latitude, longitude: travelLocation.longitude) { urls, error in
+        FlickrClient.getPhotoURLsForLocation(latitude: pin.latitude, longitude: pin.longitude) { urls, error in
             
             // Stop indicating activity.
             self.activityIndicator.stopAnimating()
@@ -139,7 +139,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     func addEmptyPhotos(url: String) {
         let newPhoto = Photo(context: DataController.shared.viewContext)
         newPhoto.url = url
-        newPhoto.travelLocation = travelLocation
+        newPhoto.pin = pin
         photos.append(newPhoto)
     }
     

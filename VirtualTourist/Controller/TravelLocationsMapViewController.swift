@@ -14,7 +14,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    var travelLocations: [TravelLocation] = []
+    var pins: [Pin] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,9 +36,9 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
     /// Load travel locations from data store and populate map.
     func loadTravelLocations() {
         
-        let fetchRequest = TravelLocation.fetchRequest()
+        let fetchRequest = Pin.fetchRequest()
         do {
-            travelLocations = try DataController.shared.viewContext.fetch(fetchRequest)
+            pins = try DataController.shared.viewContext.fetch(fetchRequest)
         }
         catch {
             fatalError(error.localizedDescription)
@@ -54,11 +54,11 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
                
         // Create annotation for each travel location.
         var annotations = [MKTravelLocationAnnotation]()
-        for travelLocation in travelLocations {
-            let latitude = CLLocationDegrees(travelLocation.latitude)
-            let longitude = CLLocationDegrees(travelLocation.longitude)
+        for pin in pins {
+            let latitude = CLLocationDegrees(pin.latitude)
+            let longitude = CLLocationDegrees(pin.longitude)
             let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            let annotation = MKTravelLocationAnnotation(travelLocation)
+            let annotation = MKTravelLocationAnnotation(pin)
             annotation.coordinate = coordinates
             annotations.append(annotation)
         }
@@ -93,7 +93,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
         if let annotation = view.annotation as? MKTravelLocationAnnotation {
             // Show photo album of travel location.
             let photoAlbumViewController = self.storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumViewController") as! PhotoAlbumViewController
-            photoAlbumViewController.travelLocation = annotation.TravelLocation
+            photoAlbumViewController.pin = annotation.pin
             navigationController!.pushViewController(photoAlbumViewController, animated: true)
         }
     }
@@ -110,19 +110,19 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
             let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
             
             // Create new travel location.
-            let newTravelLocation = TravelLocation(context: DataController.shared.viewContext)
-            newTravelLocation.latitude = locationOnMap.latitude
-            newTravelLocation.longitude = locationOnMap.longitude
+            let newPin = Pin(context: DataController.shared.viewContext)
+            newPin.latitude = locationOnMap.latitude
+            newPin.longitude = locationOnMap.longitude
             
             do {
                 // Save to data store.
                 try DataController.shared.viewContext.save()
                 
                 // Add to array of travel locations.
-                travelLocations.append(newTravelLocation)
+                pins.append(newPin)
                 
                 // Display on map.
-                let annotation = MKTravelLocationAnnotation(newTravelLocation)
+                let annotation = MKTravelLocationAnnotation(newPin)
                 annotation.coordinate = locationOnMap
                 mapView.addAnnotation(annotation)
             }
