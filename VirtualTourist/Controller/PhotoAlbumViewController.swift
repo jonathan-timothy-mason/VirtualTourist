@@ -136,7 +136,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             self.activityIndicator.startAnimating()
             
             // Randomisation based on answer to question "The randomization limits
-            // are still wrong." by Spiros R:
+            // are still wrong" by Spiros R:
             // https://knowledge.udacity.com/questions/689534
             // Get random page of photo URLs for travel location.
             FlickrClient.getPhotoURLsForLocation(page: Int.random(in: 0...pages), latitude: pin.latitude, longitude: pin.longitude, completion: handleResponseToGetPhotos)

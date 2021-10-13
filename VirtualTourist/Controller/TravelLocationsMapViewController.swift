@@ -29,6 +29,11 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Restore map position and zoom level.
+        if let region = MapState.loadRegion() {
+            mapView.region = region
+        }
+        
         // Load travel locations from data store and populate map.
         loadTravelLocations()
     }
@@ -92,6 +97,11 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
             photoAlbumViewController.pin = annotation.pin
             navigationController!.pushViewController(photoAlbumViewController, animated: true)
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        // Save map position and zoom level.
+        MapState.saveRegion(mapRegion: mapView.region)
     }
     
     /// Handle long press of map to add new travel location.
