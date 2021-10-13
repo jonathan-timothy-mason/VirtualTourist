@@ -65,11 +65,6 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
         
         // Add array of annotations to map.
         mapView.addAnnotations(annotations)
-        
-        // Centre on last (possibly new) location.
-        if annotations.count > 0 {
-            mapView.camera.centerCoordinate = annotations[annotations.count - 1].coordinate
-        }
     }
     
     static let pinReuseId = "pin"
@@ -91,6 +86,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         // Display photo album for selected travel location.
         if let annotation = view.annotation as? MKTravelLocationAnnotation {
+            
             // Show photo album of travel location.
             let photoAlbumViewController = self.storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumViewController") as! PhotoAlbumViewController
             photoAlbumViewController.pin = annotation.pin

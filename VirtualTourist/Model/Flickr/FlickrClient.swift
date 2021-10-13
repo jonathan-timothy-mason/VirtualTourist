@@ -13,21 +13,19 @@ class FlickrClient {
 
     /// Endpoints of Flickr API.
     enum Endpoints {
-        
         static let baseURL = "https://www.flickr.com/services/rest/?method=flickr.photos.search"
-        static let apiKey = "xxx"
-        
-        case getPhotoURLsForLocation(Double, Double)
+        static let apiKey = "20f97d04d53f5fed2ccbf8c5f5ceef23"
+
+        case getPhotoURLsForLocation(Int, Double, Double)
         
         /// Construct endpoint according to current case.
         /// - Returns: Endpoint URL as string.
         func constructURL() -> String {
             switch(self) {
-            case .getPhotoURLsForLocation(let latitude, let longitude):
+            case .getPhotoURLsForLocation(let page, let latitude, let longitude):
                 // extras=url_t: include URL for thumbnail-sized photo (100w x 75h). (https://www.flickr.com/services/api/flickr.photos.getSizes.html).
                 // nojsoncallback=1: exclude top-level function wrapper from JSON response (https://www.flickr.com/services/api/response.json.html).
-                return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=1&per_page=100&format=json&nojsoncallback=1&extras=url_t"
-            
+            return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=\(page)&per_page=100&format=json&nojsoncallback=1&extras=url_t"
             }
         }
         
@@ -40,21 +38,22 @@ class FlickrClient {
 
     /// Send GET request to retrieve photo URLs for supplied location from Flickr API.
     /// - Parameters:
+    ///   - page: Page of photos to download.
     ///   - latitude: Latitude of photo URLs to retrieve.
-    ///   - longitude: Lomgitude of photo URLs to retrieve.
+    ///   - longitude: Longitude of photo URLs to retrieve.
     ///   - completion: Function to call upon completion.
-    class func getPhotoURLsForLocation(latitude: Double, longitude: Double, completion: @escaping ([String], Error?) -> Void) {
-        taskForGetRequest(url: Endpoints.getPhotoURLsForLocation(latitude, longitude).url, responseType: PhotoURLsResponse.self) { response, error in
+    class func getPhotoURLsForLocation(page: Int, latitude: Double, longitude: Double, completion: @escaping (Int, [String], Error?) -> Void) {
+        taskForGetRequest(url: Endpoints.getPhotoURLsForLocation(page, latitude, longitude).url, responseType: PhotoURLsResponse.self) { response, error in
             if let response = response {
                 // Extract array of URLs from response.
                 // Based on "Transforming a Dictionary with Swift Map" of "How to Use Swift Map to Transforms Arrays, Sets, and Dictionaries" by Bart Jacobs:
                 // https://cocoacasts.com/swift-essentials-1-how-to-use-swift-map-to-transforms-arrays-sets-and-dictionaries
-                let urls = response.photos.photo.map { $0.url }
+                let urls = response.photos.photo.map { $0.url }.sorted()
                 
-                completion(urls, nil)
+                completion(response.photos.pages, urls, nil)
             }
             else {
-                completion([], error)
+                completion(0, [], error)
             }
         }
     }

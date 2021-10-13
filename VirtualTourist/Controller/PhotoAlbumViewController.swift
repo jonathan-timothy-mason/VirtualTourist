@@ -81,6 +81,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         
         let fetchRequest = Photo.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "pin == %@", pin)
+        let sortDescriptor = NSSortDescriptor(key: "url", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         do {
             
             photos = try DataController.shared.viewContext.fetch(fetchRequest)
@@ -106,32 +108,63 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         // Prevent attempt to load new collection of photos.
         button.isEnabled = false
         
-        FlickrClient.getPhotoURLsForLocation(latitude: pin.latitude, longitude: pin.longitude) { urls, error in
-            
-            // Stop indicating activity.
-            self.activityIndicator.stopAnimating()
-            
-            guard error == nil else {
-                ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading photo URLs from Flickr.", error: error)
-                return
-            }
-            
-            if urls.count <= 0 {
-                // Show message that there are no photos.
-                self.label.isHidden = false;
-            }
-            else {
-                // Allow new photo collection of photos to be loaded.
-                self.button.isEnabled = true
-                
-                // Create empty photos, to be downloaded as collection view draws its cells.
-                for url in urls {
-                    self.addEmptyPhotos(url: url)
-                }
-            }
-
-            self.collectionView.reloadData()
+        // Get number of pages for travel location.
+        FlickrClient.getPhotoURLsForLocation(page: 1, latitude: pin.latitude, longitude: pin.longitude, completion: handleResponseToGetNumberOfPages)
+    }
+    
+    
+    /// Handle response to get number of pages for travel location.
+    /// - Parameters:
+    ///   - pages: Number of pages for travel location.
+    ///   - urls: URLs of first page for travel location (not used).
+    ///   - error: Error, if there was a problem.
+    func handleResponseToGetNumberOfPages(pages: Int, urls: [String], error: Error?) {
+        
+        // Stop indicating activity.
+        self.activityIndicator.stopAnimating()
+        
+        guard error == nil else {
+            ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading number of pages of photo URLs from Flickr.", error: error)
+            return
         }
+        
+        if urls.count <= 0 {
+            // Show message that there are no photos.
+            self.label.isHidden = false;
+        }
+        else {
+            // Start indicating activity again.
+            self.activityIndicator.startAnimating()
+            
+            // Get random page of photo URLs for travel location.
+            FlickrClient.getPhotoURLsForLocation(page: Int.random(in: 0...pages), latitude: pin.latitude, longitude: pin.longitude, completion: handleResponseToGetPhotos)
+        }
+    }
+    
+    /// Handle response to get random page of photo URLs for travel location.
+    /// - Parameters:
+    ///   - pages: Number of pages for travel location (not used).
+    ///   - urls: URLs of random page for travel location
+    ///   - error: Error, if there was a problem.
+    func handleResponseToGetPhotos(pages: Int, urls: [String], error: Error?) {
+        
+        // Stop indicating activity.
+        self.activityIndicator.stopAnimating()
+        
+        guard error == nil else {
+            ControllerHelpers.showMessage(parent: self, caption: "Flckr Error", introMessage: "There was a problem downloading photo URLs from Flickr.", error: error)
+            return
+        }
+     
+        // Allow new photo collection of photos to be loaded.
+        self.button.isEnabled = true
+        
+        // Create empty photos, to be downloaded as collection view draws its cells.
+        for url in urls {
+            self.addEmptyPhotos(url: url)
+        }
+
+        self.collectionView.reloadData()
     }
     
     /// Create placeholder photo with URL, leaving image data empty, to be loaded by collection view.
