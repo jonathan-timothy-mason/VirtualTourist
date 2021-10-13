@@ -14,7 +14,7 @@ class FlickrClient {
     /// Endpoints of Flickr API.
     enum Endpoints {
         static let baseURL = "https://www.flickr.com/services/rest/?method=flickr.photos.search"
-        static let apiKey = "20f97d04d53f5fed2ccbf8c5f5ceef23"
+        static let apiKey = "xxx"
 
         case getPhotoURLsForLocation(Int, Double, Double)
         
@@ -25,7 +25,7 @@ class FlickrClient {
             case .getPhotoURLsForLocation(let page, let latitude, let longitude):
                 // extras=url_t: include URL for thumbnail-sized photo (100w x 75h). (https://www.flickr.com/services/api/flickr.photos.getSizes.html).
                 // nojsoncallback=1: exclude top-level function wrapper from JSON response (https://www.flickr.com/services/api/response.json.html).
-            return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=\(page)&per_page=100&format=json&nojsoncallback=1&extras=url_t"
+            return "\(Endpoints.baseURL)&api_key=\(Endpoints.apiKey)&lat=\(latitude)&lon=\(longitude)&page=\(page)&per_page=50&format=json&nojsoncallback=1&extras=url_t"
             }
         }
         
@@ -85,6 +85,8 @@ class FlickrClient {
     ///   - responseType: Type of JSON response object.
     ///   - completion: Function to call upon completion.
     class func taskForGetRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {
+        
+        print(url)
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
