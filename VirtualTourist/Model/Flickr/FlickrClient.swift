@@ -14,7 +14,7 @@ class FlickrClient {
     /// Endpoints of Flickr API.
     enum Endpoints {
         static let baseURL = "https://www.flickr.com/services/rest/?method=flickr.photos.search"
-        static let apiKey = "xxx"
+        static let apiKey = "20f97d04d53f5fed2ccbf8c5f5ceef23"
 
         case getPhotoURLsForLocation(Int, Double, Double)
         
